@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple Polylines</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+/*
+var markers = [
+    {
+        "title": '1',
+        "lat": '18.523060',
+        "lng": '73.780101',
+        "description": 'At 7:01'
+    },
+    {
+        "title": '2',
+        "lat": '18.523686',
+        "lng": '73.780378',
+        "description": 'At 7:02'
+    },
+    {
+        "title": '3',
+        "lat": '18.523943',
+        "lng": '73.780484',
+        "description": 'At 7:03'
+    },
+    {
+        "title": '4',
+        "lat": '18.524709',
+        "lng": '73.780873',
+        "description": 'At 7:04'
+    },
+    {
+        "title": '5',
+        "lat": '18.525379',
+        "lng": '73.781327',
+        "description": 'At 7:05'
+    },
+    {
+        "title": '6',
+        "lat": '18.525837',
+        "lng": '73.781662',
+        "description": 'At 7:06'
+    },
+    {
+        "title": '7',
+        "lat": '18.526014',
+        "lng": '73.781843',
+        "description": 'At 7:07'
+    },
+    {
+        "title": '8',
+        "lat": '18.526242',
+        "lng": '73.782076',
+        "description": 'At 7:08'
+    },
+    {
+        "title": '9',
+        "lat": '18.526384',
+        "lng": '73.782218',
+        "description": 'At 7:09'
+    },
+    {
+        "title": '10',
+        "lat": '18.526535',
+        "lng": '73.782387',
+        "description": 'At 7:09'
+    },
+    {
+        "title": '11',
+        "lat": '18.526774',
+        "lng": '73.782666',
+        "description": 'At 7:09'
+    },
+    {
+        "title": '12',
+        "lat": '18.526943',
+        "lng": '73.782909',
+        "description": 'At 7:09'
+    },
+    {
+        "title": '13',
+        "lat": '18.527231',
+        "lng": '73.783329',
+        "description": 'At 7:09'
+    },
+    {
+        "title": '15',
+        "lat": '18.527367',
+        "lng": '73.783754',
+        "description": 'At 7:09'
+    },
+    {
+        "title": '16',
+        "lat": '18.527413',
+        "lng": '73.784070',
+        "description": 'At 7:09'
+    },
+    {
+        "title": '17',
+        "lat": '18.527385',
+        "lng": '73.784531',
+        "description": 'At 7:09'
+    }
+    ];
+    window.onload = function () {
+        LoadMap();
+		update_marker();
+		var obj = {};
+		obj["lat"]=parseFloat(markers[0].lat);
+		obj["lng"]=parseFloat(markers[0].lng);
+		path.push(obj);
+		
+		}
+ 
+    var map;
+	var polyline;
+    var marker;var path = [];
+    function LoadMap() {
+        var mapOptions = {
+            center: new google.maps.LatLng(markers[0].lat, markers[0].lng),
+            zoom: 10,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        SetMarker(0);
+		map.setZoom(16);
+		
+		 var elevator = new google.maps.ElevationService;
+
+        // Draw the path, using the Visualization API and the Elevation service.
+        displayPathElevation(markers, elevator, map);
+		
+    }
+    function SetMarker(position) {
+        //Remove previous Marker.
+        if (marker != null) {
+            marker.setMap(null);
+        }
+ 
+        //Set Marker on Map.
+        var data = markers[position];
+        var myLatlng = new google.maps.LatLng(data.lat, data.lng);
+        marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: data.title,
+			icon : 'https://maps.google.com/mapfiles/kml/shapes/bus_maps.png'
+        });
+ 
+        //Create and open InfoWindow.
+        var infoWindow = new google.maps.InfoWindow();
+        infoWindow.setContent("<div style = 'width:auto;height:auto'>" + data.description + "</div>");
+        infoWindow.open(map, marker);
+    }
+	
+	var i=0;
+	
+	function update_marker(){
+	
+		setTimeout(function(){ SetMarker(i+1); i=i+1; update_marker(); 
+		var obj = {};
+		obj["lat"]=parseFloat(markers[i].lat);
+		obj["lng"]=parseFloat(markers[i].lng);
+		path.push(obj);
+		
+		var elevator = new google.maps.ElevationService;
+
+        // Draw the path, using the Visualization API and the Elevation service.
+       displayPathElevation(path, elevator, map);
+		
+		}, 1000);
+	}
+	
+	
+	function displayPathElevation(path, elevator, map) {
+	
+		if(polyline!=null)
+		{
+		polyline.setMap(null);
+		}
+	
+        // Display a polyline of the elevation path.
+        polyline=new google.maps.Polyline({
+          path: path,
+          strokeColor: '#0000CC',
+          strokeOpacity: 0.4,
+          map: map
+        });
+
+        // Create a PathElevationRequest object using this array.
+        // Ask for 256 samples along that path.
+        // Initiate the path request.
+       // elevator.getElevationAlongPath({
+        //  'path': path,
+        //  'samples': 256
+       // }, plotElevation);
+      }
+
+      // Takes an array of ElevationResult objects, draws the path on the map
+      // and plots the elevation profile on a Visualization API ColumnChart.
+      function plotElevation(elevations, status) {
+        var chartDiv = document.getElementById('elevation_chart');
+        if (status !== 'OK') {
+          // Show the error code inside the chartDiv.
+          chartDiv.innerHTML = 'Cannot show elevation: request failed because ' +
+              status;
+          return;
+        }
+        // Create a new chart in the elevation_chart DIV.
+        var chart = new google.visualization.ColumnChart(chartDiv);
+
+        // Extract the data from which to populate the chart.
+        // Because the samples are equidistant, the 'Sample'
+        // column here does double duty as distance along the
+        // X axis.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Sample');
+        data.addColumn('number', 'Elevation');
+        for (var i = 0; i < elevations.length; i++) {
+          data.addRow(['', elevations[i].elevation]);
+        }
+
+        // Draw the chart using the data within its DIV.
+        chart.draw(data, {
+          height: 150,
+          legend: 'none',
+          titleY: 'Elevation (m)'
+        });
+      }*/
+	
+    </script>
+   <!--- <script async defer
+    src="https://11111maps.googleapis.com/maps/api/js?key=AIzaSyD-NUVi48L-J54GnEkUw0x268C1jrNen9o&callback=initMap">
+    </script> --->
+	<span>Mitesh</span>
+	<a href='https://photos.google.com/share/AF1QipM6q1TvE7R3d6OOQP13AYIC4MwJxXZz0pGw47b04BfXfq4Z0wAawaKwZ8oOUkK-mw?key=emhyNE9oTjM5bHpidXoteVBqNFZpMWVXMUduLTlB&source=ctrlq.org'><img src='https://raw.githubusercontent.com/labnol/files/master/trex.jpg' /></a>
+  </body>
+</html>
